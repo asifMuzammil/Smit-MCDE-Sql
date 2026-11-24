@@ -47,11 +47,10 @@ FROM sales.customers
 WHERE email  LIKE '%.com' and last_name LIKE 'M%';
 
 --1.7
-  SELECT product_name, category_id, list_price
-    FROM production.products
-    WHERE (category_id = 1 OR category_id = 6) 
-      AND list_price < 1000
-      ORDER BY list_price ASC  ;
+SELECT product_name, list_price
+FROM production.products
+ORDER BY list_price DESC
+OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY;
 
 
 --1.8

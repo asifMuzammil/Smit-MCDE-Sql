@@ -3,12 +3,13 @@ SELECT *
 FROM sales.customers;
 --2.1
 SELECT 
-p.product_id,
-p.product_name,
-b.brand_name,
-p.list_price 
+    p.product_id,
+    p.product_name,
+    b.brand_name,
+    p.list_price 
 FROM production.products AS p
-inner JOIN production.brands b 
+INNER JOIN production.brands AS b
+    ON p.brand_id = b.brand_id; 
 
 --2.2
  SELECT 
@@ -64,10 +65,18 @@ order by list_price ;
 --2.6
 
 SELECT COUNT(DISTINCT o.order_id) AS true_order_count
-    FROM sales.orders ASne o
-    inner JOIN sales.order_items AS oi 
-        ON o.order_id = oi.order_id;
+FROM sales.orders AS o
+INNER JOIN sales.order_items AS oi 
+    ON o.order_id = oi.order_id;
 
 --2.7
-
------Not----
+-- Explanation:
+-- 1. Deliberate Use Cases:
+--    We deliberately use a CROSS JOIN to generate complete grids or matrices where every combination must exist, such as:
+--    - Generating an inventory audit checklist across all stores and all products (e.g. 3 stores * 321 products = 963 rows).
+--    - Generating a reporting calendar grid (Dates * Stores) to ensure days with zero sales are preserved and reported as 0 instead of missing.
+--
+-- 2. Guarding against Accidental Cross Joins:
+--    - Always use explicit ANSI-92 JOIN syntax (INNER JOIN ... ON ...) instead of legacy comma-separated syntax (FROM TableA, TableB).
+--      If an engineer forgets the ON clause in ANSI-92 syntax, SQL Server throws an immediate syntax error and refuses to execute, completely preventing an accidental Cartesian product.
+--    - During query development, use query limits (e.g. TOP 100) to safeguard server resources.
